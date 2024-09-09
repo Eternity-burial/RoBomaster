@@ -1,0 +1,3 @@
+[submodule "mecanum/sp_middleware"]
+	path = mecanum/sp_middleware
+	url = git@github.com:Eternity-burial/sp_middleware.git
