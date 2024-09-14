@@ -2,6 +2,7 @@
 #include "io/can/can.hpp"
 #include "io/dbus/dbus.hpp"
 #include "motor/rm_motor/rm_motor.hpp"
+#include "para_init.hpp"
 #include "tools/math_tools/math_tools.hpp"
 #include "tools/mecanum/mecanum.hpp"
 #include "tools/pid/pid.hpp"
@@ -20,11 +21,25 @@ motor::M3508 chassis_rr(4);
 io::CAN can_1(&hcan1);
 io::DBus remote_mecanum(&huart3);
 
-tools::PID chassis_lf_pid(0.001, 1.0, 0.0, 0.0, 13.0, 2.0, 1);
-tools::PID chassis_lr_pid(0.001, 1.0, 0.0, 0.0, 13.0, 2.0, 1);
-tools::PID chassis_rf_pid(0.001, 1.0, 0.0, 0.0, 13.0, 2.0, 1);
-tools::PID chassis_rr_pid(0.001, 1.0, 0.0, 0.0, 13.0, 2.0, 1);
-tools::Mecanum chassis(77.0, 165, 185, 1, 1, 1, 1);
+tools::PID chassis_lf_pid(
+  chassis_lf_pid_dt, chassis_lf_pid_kp, chassis_lf_pid_ki, chassis_lf_pid_kd, chassis_lf_maxout,
+  chassis_lf_maxiout, chassis_lf_alpha);
+
+tools::PID chassis_lr_pid(
+  chassis_lr_pid_dt, chassis_lr_pid_kp, chassis_lr_pid_ki, chassis_lr_pid_kd, chassis_lr_maxout,
+  chassis_lr_maxiout, chassis_lr_alpha);
+
+tools::PID chassis_rf_pid(
+  chassis_rf_pid_dt, chassis_lf_pid_kp, chassis_lf_pid_ki, chassis_lf_pid_kd, chassis_rf_maxout,
+  chassis_rf_maxiout, chassis_rf_alpha);
+
+tools::PID chassis_rr_pid(
+  chassis_rr_pid_dt, chassis_rr_pid_kp, chassis_rr_pid_ki, chassis_rr_pid_kd, chassis_rr_maxout,
+  chassis_rr_maxiout, chassis_rr_alpha);
+
+tools::Mecanum chassis(
+  chassis_wheel_radius, chassis_half_length, chassis_half_width, chassis_reverse_lf,
+  chassis_reverse_lr, chassis_reverse_rf, chassis_reverse_rr);
 
 Mode mode = Mode::zero_force_mode;
 
@@ -45,18 +60,18 @@ void mode_receive(void)
   }
 }  //控制模式读取
 
-void mode_setting(void)
-{
-  switch (mode) {
-    case Mode::zero_force_mode:
+// void mode_setting(void)
+// {
+//   switch (mode) {
+//     case Mode::zero_force_mode:
 
-      break;
-    case Mode::rc_control_mode:
-      break;
-    default:
-      break;
-  }
-}  //模式、死区设定
+//       break;
+//     case Mode::rc_control_mode:
+//       break;
+//     default:
+//       break;
+//   }
+// }  //模式、死区设定
 
 void chassis_date_reveive(void)
 {
@@ -107,9 +122,9 @@ void chassis_task()
 {
   while (1) {
     remote_mecanum.restart();
-    while (!remote_mecanum.is_open());
+    while (!remote_mecanum.is_open())
+      ;
     mode_receive();
-    mode_setting();
     chassis_date_reveive();
     chassis_date_calculation();
     chassis_date_transmit();

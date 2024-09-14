@@ -52,20 +52,20 @@ extern "C" void uart_task()
     osDelay(100);
   }
 }
+// void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
+// {
+//   if (hcan == &hcan1) {
+//     can1.recv();
+//     if (can1.rx_header_.StdId == g6020_1.rx_id()) {
+//       {
+//         g6020_1.read(can1.rx_data_, osKernelSysTick());
+//       }
+//     }
+//     return;
+//   }
+// }
+}
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
-{
-  if (hcan == &hcan1) {
-    can1.recv();
-    if (can1.rx_header_.StdId == g6020_1.rx_id()) {
-      {
-        g6020_1.read(can1.rx_data_, osKernelSysTick());
-      }
-    }
-    return;
-  }
-}
-}
 extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
 {
   if (huart == &huart3) {
