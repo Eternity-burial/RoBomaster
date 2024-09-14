@@ -8,7 +8,8 @@
         "*.h": "c",
         "compare": "cpp",
         "*.tcc": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "limits": "cpp"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "cmake.configureOnOpen": true,

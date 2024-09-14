@@ -1,6 +1,0 @@
-#include "cmsis_os.h"
-#include "io/can/can.hpp"
-#include "io/dbus/dbus.hpp"
-#include "io/plotter/plotter.hpp"
-#include "motor/rm_motor/rm_motor.hpp"
-#include "tools/pid/pid.hpp"
