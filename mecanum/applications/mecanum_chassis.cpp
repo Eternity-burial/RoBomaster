@@ -132,30 +132,30 @@ void chassis_task()
   }
 }
 
-// void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
-// {
-//   if (hcan == &hcan1) {
-//     can_1.recv();
-//     if (can_1.rx_header_.StdId == G6020_lf.rx_id()) {
-//       {
-//         G6020_lf.read(can_1.rx_data_, osKernelSysTick());
-//       }
-//     }
-//     return;
-//   }
-// }
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
+{
+  if (hcan == &hcan1) {
+    can_1.recv();
+    if (can_1.rx_header_.StdId == chassis_lf.rx_id()) {
+      {
+        chassis_lf.read(can_1.rx_data_, osKernelSysTick());
+      }
+    }
+    return;
+  }
+}
 }
 
-// extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
-// {
-//   if (huart == &huart3) {
-//     remote_mecanum.update(osKernelSysTick());
-//   }
-// }
+extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
+{
+  if (huart == &huart3) {
+    remote_mecanum.update(osKernelSysTick());
+  }
+}
 
-// extern "C" void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
-// {
-//   if (huart == &huart3) {
-//     remote_mecanum.restart();
-//   }
-// }
+extern "C" void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
+{
+  if (huart == &huart3) {
+    remote_mecanum.restart();
+  }
+}
