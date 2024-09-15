@@ -53,7 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     applications/remote.cpp
     applications/RM_motor.cpp
     applications/mecanum_chassis.cpp
-    applications/can_callback.cpp
+    applications/callback_calculation_send.cpp
 
     sp_middleware/io/buzzer/buzzer.cpp
     sp_middleware/io/can/can.cpp

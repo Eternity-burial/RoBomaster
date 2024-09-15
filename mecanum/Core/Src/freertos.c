@@ -52,6 +52,7 @@ osThreadId buzzertaskHandle;
 osThreadId ledtaskHandle;
 osThreadId rm_motorTaskHandle;
 osThreadId uarttaskHandle;
+osThreadId transmittaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -63,6 +64,7 @@ extern void buzzer_task(void const * argument);
 extern void led_task(void const * argument);
 extern void rm_motor_Task(void const * argument);
 extern void uart_task(void const * argument);
+extern void transmit_task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -128,6 +130,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of uarttask */
   osThreadDef(uarttask, uart_task, osPriorityIdle, 0, 128);
   uarttaskHandle = osThreadCreate(osThread(uarttask), NULL);
+
+  /* definition and creation of transmittask */
+  osThreadDef(transmittask, transmit_task, osPriorityHigh, 0, 128);
+  transmittaskHandle = osThreadCreate(osThread(transmittask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

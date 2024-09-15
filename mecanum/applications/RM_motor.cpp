@@ -66,16 +66,16 @@ extern "C" void uart_task()
 // }
 }
 
-extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
-{
-  if (huart == &huart3) {
-    remote.update(osKernelSysTick());
-  }
-}
+// extern "C" void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef * huart, uint16_t Size)
+// {
+//   if (huart == &huart3) {
+//     remote.update(osKernelSysTick());
+//   }
+// }
 
-extern "C" void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
-{
-  if (huart == &huart3) {
-    remote.restart();
-  }
-}
+// extern "C" void HAL_UART_ErrorCallback(UART_HandleTypeDef * huart)
+// {
+//   if (huart == &huart3) {
+//     remote.restart();
+//   }
+// }

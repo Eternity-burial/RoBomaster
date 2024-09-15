@@ -16,9 +16,6 @@ static const bool chassis_reverse_lr = false;
 static const bool chassis_reverse_rf = true;
 static const bool chassis_reverse_rr = true;
 
-// 底盘速度
-// static const float chassis_speed_x = ;
-
 // 底盘电机
 
 // 左前
