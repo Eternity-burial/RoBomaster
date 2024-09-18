@@ -24,13 +24,9 @@ extern io::DBus remote_mecanum;
 extern io::Plotter chassis_plot;
 
 extern tools::PID chassis_lf_pid;
-
 extern tools::PID chassis_lr_pid;
-
 extern tools::PID chassis_rf_pid;
-
 extern tools::PID chassis_rr_pid;
-
 extern tools::Mecanum chassis;
 
 Mode mode = Mode::zero_force_mode;
@@ -112,10 +108,10 @@ void chassis_date_write(void)
 extern "C" {
 void chassis_task()
 {
+  remote_mecanum.restart();
+  while (!remote_mecanum.is_open())
+    ;
   while (1) {
-    remote_mecanum.restart();
-    while (!remote_mecanum.is_open())
-      ;
     mode_receive();
     chassis_date_reveive();
     chassis_date_plot();

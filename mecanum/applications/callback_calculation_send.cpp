@@ -55,7 +55,7 @@ void transmit_task()
 {
   while (1) {
     void chassis_date_transmit();
-    vTaskDelay(1);
+    vTaskDelay(10);
   }
 }
 }
