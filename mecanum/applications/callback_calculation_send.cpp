@@ -7,7 +7,6 @@
 #include "tools/math_tools/math_tools.hpp"
 #include "tools/mecanum/mecanum.hpp"
 #include "tools/pid/pid.hpp"
-extern int flag;
 motor::M3508 chassis_lf(chassis_left_front_motor);
 motor::M3508 chassis_lr(chassis_left_rear_motor);
 motor::M3508 chassis_rf(chassis_right_front_motor);
@@ -27,7 +26,7 @@ tools::PID chassis_lr_pid(
   chassis_lr_maxiout, chassis_lr_alpha);
 
 tools::PID chassis_rf_pid(
-  chassis_rf_pid_dt, chassis_lf_pid_kp, chassis_lf_pid_ki, chassis_lf_pid_kd, chassis_rf_maxout,
+  chassis_rf_pid_dt, chassis_rf_pid_kp, chassis_rf_pid_ki, chassis_rf_pid_kd, chassis_rf_maxout,
   chassis_rf_maxiout, chassis_rf_alpha);
 
 tools::PID chassis_rr_pid(
@@ -35,17 +34,8 @@ tools::PID chassis_rr_pid(
   chassis_rr_maxiout, chassis_rr_alpha);
 
 tools::Mecanum chassis(
-  chassis_wheel_radius, chassis_half_length, chassis_half_width, chassis_reverse_lf,
-  chassis_reverse_lr, chassis_reverse_rf, chassis_reverse_rr);
-
-void chassis_date_calculation(void)
-{
-  chassis.calc(2 * remote_mecanum.stick_lv, remote_mecanum.stick_lh, 6 * remote_mecanum.stick_rh);
-  chassis_lf_pid.calc(chassis.speed_lf, chassis_lf.speed());
-  chassis_lr_pid.calc(chassis.speed_lr, chassis_lr.speed());
-  chassis_rf_pid.calc(chassis.speed_rf, chassis_rf.speed());
-  chassis_rr_pid.calc(chassis.speed_rr, chassis_rr.speed());
-}  //底盘运算
+  mecanum_radius, chassis_half_length, chassis_half_width, chassis_reverse_lf, chassis_reverse_lr,
+  chassis_reverse_rf, chassis_reverse_rr);
 
 void chassis_date_transmit(void)
 {

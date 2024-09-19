@@ -32,6 +32,11 @@ extern tools::Mecanum chassis;
 
 Mode mode = Mode::zero_force_mode;
 
+float chassis_lf_real_speed;
+float chassis_lr_real_speed;
+float chassis_rf_real_speed;
+float chassis_rr_real_speed;
+
 void mode_receive(void)
 {
   switch (remote_mecanum.switch_r) {
@@ -71,13 +76,29 @@ void chassis_date_reveive(void)
 
 }  //底盘数据读取
 
+void chassis_real_speed(void)
+{
+  chassis_lf_real_speed = chassis_lf.speed() * mecanum_radius;
+  chassis_lr_real_speed = chassis_lr.speed() * mecanum_radius;
+  chassis_rf_real_speed = chassis_rf.speed() * mecanum_radius;
+  chassis_rr_real_speed = chassis_rr.speed() * mecanum_radius;
+}  //底盘实际速度解算
+
 void chassis_date_plot(void)
 {
-  chassis_plot.plot(chassis_lf.speed(), chassis_lr.speed(), chassis_rf.speed(), chassis_rr.speed());
+  chassis_plot.plot(chassis_lf_real_speed
+                    // , chassis_lr_real_speed, chassis_rf_real_speed, chassis_rr_real_speed
+  );
 }  //底盘数据打印
 
-extern void chassis_date_calculation(void);
-//底盘运算
+void chassis_date_calculation(void)
+{
+  chassis.calc(2 * remote_mecanum.stick_lv, remote_mecanum.stick_lh, 6 * remote_mecanum.stick_rh);
+  chassis_lf_pid.calc(chassis.speed_lf, chassis_lf.speed());
+  chassis_lr_pid.calc(chassis.speed_lr, chassis_lr.speed());
+  chassis_rf_pid.calc(chassis.speed_rf, chassis_rf.speed());
+  chassis_rr_pid.calc(chassis.speed_rr, chassis_rr.speed());
+}  //底盘运算
 
 void chassis_date_write(void)
 {
@@ -94,7 +115,7 @@ void chassis_date_write(void)
   }
   else if (mode == Mode::rc_control_mode) {
     // chassis_lf.cmd(chassis_lf_pid.out);
-    chassis_lf.cmd(1);
+    chassis_lf.cmd(chassis_lf_pid.out);
     chassis_lf.write(can_2.tx_data_);
     chassis_lr.cmd(chassis_lr_pid.out);
     chassis_lr.write(can_2.tx_data_);
@@ -118,11 +139,12 @@ void chassis_task()
   while (1) {
     mode_receive();
     chassis_date_reveive();
+    chassis_real_speed();
     chassis_date_plot();
     chassis_date_calculation();
     chassis_date_write();
     chassis_date_transmit();
-    vTaskDelay(10);
+    vTaskDelay(20);
   }
 }
 }
