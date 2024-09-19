@@ -7,13 +7,14 @@
 #include "tools/math_tools/math_tools.hpp"
 #include "tools/mecanum/mecanum.hpp"
 #include "tools/pid/pid.hpp"
-
-motor::M3508 chassis_lf(1);
-motor::M3508 chassis_lr(2);
-motor::M3508 chassis_rf(3);
-motor::M3508 chassis_rr(4);
+extern int flag;
+motor::M3508 chassis_lf(chassis_left_front_motor);
+motor::M3508 chassis_lr(chassis_left_rear_motor);
+motor::M3508 chassis_rf(chassis_right_front_motor);
+motor::M3508 chassis_rr(chassis_right_rear_motor);
 
 io::CAN can_1(&hcan1);
+io::CAN can_2(&hcan2);
 io::DBus remote_mecanum(&huart3);
 io::Plotter chassis_plot(&huart1);
 
@@ -39,14 +40,19 @@ tools::Mecanum chassis(
 
 void chassis_date_calculation(void)
 {
-  chassis.calc(2 * remote_mecanum.stick_lh, remote_mecanum.stick_lv, 6 * remote_mecanum.stick_rv);
+  chassis.calc(2 * remote_mecanum.stick_lv, remote_mecanum.stick_lh, 6 * remote_mecanum.stick_rh);
   chassis_lf_pid.calc(chassis.speed_lf, chassis_lf.speed());
   chassis_lr_pid.calc(chassis.speed_lr, chassis_lr.speed());
   chassis_rf_pid.calc(chassis.speed_rf, chassis_rf.speed());
   chassis_rr_pid.calc(chassis.speed_rr, chassis_rr.speed());
 }  //底盘运算
 
-void chassis_date_transmit(void) { can_1.send(chassis_lf.tx_id()); };
+void chassis_date_transmit(void)
+{
+  can_1.send(chassis_lf.tx_id());
+  // flag = 1;
+  can_2.send(chassis_lf.tx_id());
+};
 
 // 底盘数据发送
 
@@ -70,6 +76,48 @@ extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
         chassis_lf.read(can_1.rx_data_, osKernelSysTick());
       }
     }
+    return;
+  }
+  if (hcan == &hcan2) {
+    can_2.recv();
+    // switch (can_2.rx_header_.StdId)
+    // {
+    // case chassis_lf.rx_id():
+    //   chassis_lf.read(can_2.rx_data_, osKernelSysTick());
+    //   break;
+    // case chassis_lr.rx_id():
+    //   chassis_lf.read(can_2.rx_data_, osKernelSysTick());
+    //   break;
+    // case chassis_rf.rx_id():
+    //   chassis_rf.read(can_2.rx_data_, osKernelSysTick());
+    //   break;
+    // case chassis_rr.rx_id():
+    //   chassis_rr.read(can_2.rx_data_, osKernelSysTick());
+    //   break;
+    // default:
+    //   break;
+    // }
+    if (can_2.rx_header_.StdId == chassis_lf.rx_id()) {
+      {
+        chassis_lf.read(can_2.rx_data_, osKernelSysTick());
+      }
+    }
+    if (can_2.rx_header_.StdId == chassis_lr.rx_id()) {
+      {
+        chassis_lr.read(can_2.rx_data_, osKernelSysTick());
+      }
+    }
+    if (can_2.rx_header_.StdId == chassis_rf.rx_id()) {
+      {
+        chassis_rf.read(can_2.rx_data_, osKernelSysTick());
+      }
+    }
+    if (can_2.rx_header_.StdId == chassis_rr.rx_id()) {
+      {
+        chassis_rr.read(can_2.rx_data_, osKernelSysTick());
+      }
+    }
+
     return;
   }
 }

@@ -20,18 +20,18 @@ static const bool chassis_reverse_rr = true;
 
 // 左前
 //电机编号
-constexpr uint8_t chassis_left_front_motor = 1;
+constexpr uint8_t chassis_left_front_motor = 4;
 //PID参数
 static const float chassis_lf_pid_dt = 0.001;
 static const float chassis_lf_pid_kp = 1.0f;
 static const float chassis_lf_pid_ki = 0.0f;
 static const float chassis_lf_pid_kd = 0.0f;
-static const float chassis_lf_maxout = 13.0f;
+static const float chassis_lf_maxout = 500.0f;
 static const float chassis_lf_maxiout = 2.0f;
 static const float chassis_lf_alpha = 0.1f;
 
 // 左后
-constexpr uint8_t chassis_left_rear_motor = 2;
+constexpr uint8_t chassis_left_rear_motor = 1;
 //PID参数
 static const float chassis_lr_pid_dt = 0.001;
 static const float chassis_lr_pid_kp = 1.0;
@@ -53,7 +53,7 @@ static const float chassis_rf_maxiout = 2.0f;
 static const float chassis_rf_alpha = 0.1f;
 
 //右后
-constexpr uint8_t chassis_right_rear_motor = 4;
+constexpr uint8_t chassis_right_rear_motor = 2;
 //PID参数
 static const float chassis_rr_pid_dt = 0.001;
 static const float chassis_rr_pid_kp = 1.0;

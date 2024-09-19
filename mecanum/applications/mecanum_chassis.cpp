@@ -20,6 +20,7 @@ extern motor::M3508 chassis_rf;
 extern motor::M3508 chassis_rr;
 
 extern io::CAN can_1;
+extern io::CAN can_2;
 extern io::DBus remote_mecanum;
 extern io::Plotter chassis_plot;
 
@@ -63,10 +64,10 @@ void mode_receive(void)
 
 void chassis_date_reveive(void)
 {
-  chassis_lf.read(can_1.rx_data_, osKernelSysTick());
-  chassis_lr.read(can_1.rx_data_, osKernelSysTick());
-  chassis_rf.read(can_1.rx_data_, osKernelSysTick());
-  chassis_rr.read(can_1.rx_data_, osKernelSysTick());
+  chassis_lf.read(can_2.rx_data_, osKernelSysTick());
+  chassis_lr.read(can_2.rx_data_, osKernelSysTick());
+  chassis_rf.read(can_2.rx_data_, osKernelSysTick());
+  chassis_rr.read(can_2.rx_data_, osKernelSysTick());
 
 }  //底盘数据读取
 
@@ -82,28 +83,31 @@ void chassis_date_write(void)
 {
   if (mode == Mode::zero_force_mode) {
     chassis_lf.cmd(0);
-    chassis_lf.write(can_1.tx_data_);
+    chassis_lf.write(can_2.tx_data_);
     chassis_lr.cmd(0);
-    chassis_lr.write(can_1.tx_data_);
+    chassis_lr.write(can_2.tx_data_);
     chassis_rf.cmd(0);
-    chassis_rf.write(can_1.tx_data_);
+    chassis_rf.write(can_2.tx_data_);
     chassis_rr.cmd(0);
-    chassis_rr.write(can_1.tx_data_);
+    chassis_rr.write(can_2.tx_data_);
+    // can_2.send(chassis_lf.tx_id());
   }
   else if (mode == Mode::rc_control_mode) {
-    chassis_lf.cmd(chassis_lf_pid.out);
-    chassis_lf.write(can_1.tx_data_);
+    // chassis_lf.cmd(chassis_lf_pid.out);
+    chassis_lf.cmd(1);
+    chassis_lf.write(can_2.tx_data_);
     chassis_lr.cmd(chassis_lr_pid.out);
-    chassis_lr.write(can_1.tx_data_);
+    chassis_lr.write(can_2.tx_data_);
     chassis_rf.cmd(chassis_rf_pid.out);
-    chassis_rf.write(can_1.tx_data_);
+    chassis_rf.write(can_2.tx_data_);
     chassis_rr.cmd(chassis_rr_pid.out);
-    chassis_rr.write(can_1.tx_data_);
+    chassis_rr.write(can_2.tx_data_);
+    // can_2.send(chassis_lf.tx_id());
   }
 };
 //底盘数据写入
 
-// extern void chassis_date_transmit(void);
+extern void chassis_date_transmit(void);
 
 extern "C" {
 void chassis_task()
@@ -117,8 +121,8 @@ void chassis_task()
     chassis_date_plot();
     chassis_date_calculation();
     chassis_date_write();
-    // chassis_date_transmit();
-    vTaskDelay(1);
+    chassis_date_transmit();
+    vTaskDelay(10);
   }
 }
 }
