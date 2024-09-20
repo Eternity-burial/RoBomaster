@@ -50,8 +50,8 @@ extern "C" {
 void transmit_task()
 {
   while (1) {
-    void chassis_date_transmit();
-    vTaskDelay(10);
+    chassis_date_transmit();
+    vTaskDelay(3);
   }
 }
 }

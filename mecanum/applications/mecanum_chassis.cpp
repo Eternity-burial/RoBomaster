@@ -76,7 +76,7 @@ void chassis_date_reveive(void)
 
 }  //底盘数据读取
 
-void chassis_real_speed(void)
+void chassis_real_speed_calculation(void)
 {
   chassis_lf_real_speed = chassis_lf.speed() * mecanum_radius;
   chassis_lr_real_speed = chassis_lr.speed() * mecanum_radius;
@@ -86,14 +86,18 @@ void chassis_real_speed(void)
 
 void chassis_date_plot(void)
 {
-  chassis_plot.plot(chassis_lf_real_speed
-                    // , chassis_lr_real_speed, chassis_rf_real_speed, chassis_rr_real_speed
+  chassis_plot.plot(
+    chassis_lf_real_speed,
+    chassis_lr_real_speed,
+    chassis_rf_real_speed,
+    chassis_rr_real_speed
   );
 }  //底盘数据打印
 
 void chassis_date_calculation(void)
 {
-  chassis.calc(2 * remote_mecanum.stick_lv, remote_mecanum.stick_lh, 6 * remote_mecanum.stick_rh);
+  chassis.calc(
+    vx * remote_mecanum.stick_lv, vy * remote_mecanum.stick_lh, wz * remote_mecanum.stick_rh);
   chassis_lf_pid.calc(chassis.speed_lf, chassis_lf.speed());
   chassis_lr_pid.calc(chassis.speed_lr, chassis_lr.speed());
   chassis_rf_pid.calc(chassis.speed_rf, chassis_rf.speed());
@@ -138,13 +142,12 @@ void chassis_task()
     ;
   while (1) {
     mode_receive();
-    chassis_date_reveive();
-    chassis_real_speed();
+    // chassis_date_reveive();
+    chassis_real_speed_calculation();
     chassis_date_plot();
     chassis_date_calculation();
     chassis_date_write();
-    chassis_date_transmit();
-    vTaskDelay(20);
+    vTaskDelay(10);
   }
 }
 }

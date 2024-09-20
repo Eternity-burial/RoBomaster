@@ -6,11 +6,11 @@ io::Buzzer buzzer(&htim4, TIM_CHANNEL_3, 84e6);
 extern "C" {
 void buzzer_task()
 {
-  buzzer.set(8192, 0);
   buzzer.start();
-  vTaskDelay(100);
-  buzzer.set(9000, 0.2);
-  vTaskDelay(100);
+  buzzer.set(2000, 0.5);
+  vTaskDelay(1000);
+  buzzer.set(5000, 0.5);
+  vTaskDelay(1000);
   buzzer.stop();
   vTaskDelay(1000);
 
