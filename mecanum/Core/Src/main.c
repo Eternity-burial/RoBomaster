@@ -102,7 +102,7 @@ int main(void)
   MX_CAN2_Init();
   /* USER CODE BEGIN 2 */
 
-  can_filter_init();
+  // can_filter_init();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */

@@ -46,6 +46,14 @@ void chassis_date_transmit(void)
 
 // 底盘数据发送
 
+void can_filter_init(void)
+{
+  can_1.config();
+  can_1.start();
+  can_2.config();
+  can_2.start();
+}
+
 extern "C" {
 void transmit_task()
 {
@@ -61,9 +69,9 @@ extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
 {
   if (hcan == &hcan1) {
     can_1.recv();
-    if (can_1.rx_header_.StdId == chassis_lf.rx_id()) {
+    if (can_1.rx_id == chassis_lf.rx_id()) {
       {
-        chassis_lf.read(can_1.rx_data_, osKernelSysTick());
+        chassis_lf.read(can_1.rx_data, osKernelSysTick());
       }
     }
     return;
@@ -87,24 +95,24 @@ extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef * hcan)
     // default:
     //   break;
     // }
-    if (can_2.rx_header_.StdId == chassis_lf.rx_id()) {
+    if (can_2.rx_id == chassis_lf.rx_id()) {
       {
-        chassis_lf.read(can_2.rx_data_, osKernelSysTick());
+        chassis_lf.read(can_2.rx_data, osKernelSysTick());
       }
     }
-    if (can_2.rx_header_.StdId == chassis_lr.rx_id()) {
+    if (can_2.rx_id == chassis_lr.rx_id()) {
       {
-        chassis_lr.read(can_2.rx_data_, osKernelSysTick());
+        chassis_lr.read(can_2.rx_data, osKernelSysTick());
       }
     }
-    if (can_2.rx_header_.StdId == chassis_rf.rx_id()) {
+    if (can_2.rx_id == chassis_rf.rx_id()) {
       {
-        chassis_rf.read(can_2.rx_data_, osKernelSysTick());
+        chassis_rf.read(can_2.rx_data, osKernelSysTick());
       }
     }
-    if (can_2.rx_header_.StdId == chassis_rr.rx_id()) {
+    if (can_2.rx_id == chassis_rr.rx_id()) {
       {
-        chassis_rr.read(can_2.rx_data_, osKernelSysTick());
+        chassis_rr.read(can_2.rx_data, osKernelSysTick());
       }
     }
 

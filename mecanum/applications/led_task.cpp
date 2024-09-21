@@ -1,13 +1,11 @@
 #include "cmsis_os.h"
 #include "io/led/led.hpp"
-io::Led led(&htim5);
+io::LED led(&htim5);
 
 extern "C" {
 void led_task()
 {
-  // vTaskDelay(1000);
-
-  io::Led led(&htim5);
+  led.start();
   // HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   // HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_2);
   // HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_3);

@@ -69,10 +69,10 @@ void mode_receive(void)
 
 void chassis_date_reveive(void)
 {
-  chassis_lf.read(can_2.rx_data_, osKernelSysTick());
-  chassis_lr.read(can_2.rx_data_, osKernelSysTick());
-  chassis_rf.read(can_2.rx_data_, osKernelSysTick());
-  chassis_rr.read(can_2.rx_data_, osKernelSysTick());
+  chassis_lf.read(can_2.rx_data, osKernelSysTick());
+  chassis_lr.read(can_2.rx_data, osKernelSysTick());
+  chassis_rf.read(can_2.rx_data, osKernelSysTick());
+  chassis_rr.read(can_2.rx_data, osKernelSysTick());
 
 }  //底盘数据读取
 
@@ -87,11 +87,7 @@ void chassis_real_speed_calculation(void)
 void chassis_date_plot(void)
 {
   chassis_plot.plot(
-    chassis_lf_real_speed,
-    chassis_lr_real_speed,
-    chassis_rf_real_speed,
-    chassis_rr_real_speed
-  );
+    chassis_lf_real_speed, chassis_lr_real_speed, chassis_rf_real_speed, chassis_rr_real_speed);
 }  //底盘数据打印
 
 void chassis_date_calculation(void)
@@ -108,25 +104,25 @@ void chassis_date_write(void)
 {
   if (mode == Mode::zero_force_mode) {
     chassis_lf.cmd(0);
-    chassis_lf.write(can_2.tx_data_);
+    chassis_lf.write(can_2.tx_data);
     chassis_lr.cmd(0);
-    chassis_lr.write(can_2.tx_data_);
+    chassis_lr.write(can_2.tx_data);
     chassis_rf.cmd(0);
-    chassis_rf.write(can_2.tx_data_);
+    chassis_rf.write(can_2.tx_data);
     chassis_rr.cmd(0);
-    chassis_rr.write(can_2.tx_data_);
+    chassis_rr.write(can_2.tx_data);
     // can_2.send(chassis_lf.tx_id());
   }
   else if (mode == Mode::rc_control_mode) {
     // chassis_lf.cmd(chassis_lf_pid.out);
     chassis_lf.cmd(chassis_lf_pid.out);
-    chassis_lf.write(can_2.tx_data_);
+    chassis_lf.write(can_2.tx_data);
     chassis_lr.cmd(chassis_lr_pid.out);
-    chassis_lr.write(can_2.tx_data_);
+    chassis_lr.write(can_2.tx_data);
     chassis_rf.cmd(chassis_rf_pid.out);
-    chassis_rf.write(can_2.tx_data_);
+    chassis_rf.write(can_2.tx_data);
     chassis_rr.cmd(chassis_rr_pid.out);
-    chassis_rr.write(can_2.tx_data_);
+    chassis_rr.write(can_2.tx_data);
     // can_2.send(chassis_lf.tx_id());
   }
 };
@@ -147,7 +143,7 @@ void chassis_task()
     chassis_date_plot();
     chassis_date_calculation();
     chassis_date_write();
-    vTaskDelay(10);
+    vTaskDelay(3);
   }
 }
 }
